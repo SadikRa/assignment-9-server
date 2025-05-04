@@ -120,9 +120,112 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  password: 'password',
+  role: 'role',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  rating: 'rating',
+  categoryId: 'categoryId',
+  purchaseSource: 'purchaseSource',
+  isPremium: 'isPremium',
+  price: 'price',
+  images: 'images',
+  authorId: 'authorId',
+  status: 'status',
+  moderationNote: 'moderationNote',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  categoryImage: 'categoryImage',
+  isDeleted: 'isDeleted'
+};
+
+exports.Prisma.VoteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reviewId: 'reviewId',
+  type: 'type',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  userId: 'userId',
+  reviewId: 'reviewId',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reviewId: 'reviewId',
+  amount: 'amount',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+exports.Role = exports.$Enums.Role = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+};
+
+exports.ReviewStatus = exports.$Enums.ReviewStatus = {
+  PENDING: 'PENDING',
+  PUBLISHED: 'PUBLISHED',
+  UNPUBLISHED: 'UNPUBLISHED'
+};
+
+exports.VoteType = exports.$Enums.VoteType = {
+  UPVOTE: 'UPVOTE',
+  DOWNVOTE: 'DOWNVOTE'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  PENDING: 'PENDING'
+};
 
 exports.Prisma.ModelName = {
-
+  User: 'User',
+  Review: 'Review',
+  Category: 'Category',
+  Vote: 'Vote',
+  Comment: 'Comment',
+  Payment: 'Payment'
 };
 
 /**
