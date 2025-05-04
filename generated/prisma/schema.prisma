@@ -7,3 +7,106 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  isDeleted Boolean   @default(false)
+  reviews   Review[]
+  comments  Comment[]
+  votes     Vote[]
+  payments  Payment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Review {
+  id             String       @id @default(uuid())
+  title          String
+  description    String
+  rating         Int          @default(0)
+  categoryId     String
+  category       Category     @relation(fields: [categoryId], references: [id])
+  purchaseSource String?
+  isPremium      Boolean      @default(false)
+  price          Int?
+  images         String[]
+  authorId       String
+  author         User         @relation(fields: [authorId], references: [id])
+  status         ReviewStatus @default(PENDING)
+  moderationNote String?
+  isDeleted      Boolean      @default(false)
+  votes          Vote[]
+  comments       Comment[]
+  payments       Payment[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Category {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  categoryImage String?
+  isDeleted     Boolean  @default(false)
+  reviews       Review[]
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id])
+  type      VoteType
+  createdAt DateTime @default(now())
+
+  @@unique([userId, reviewId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id])
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  reviewId  String
+  review    Review        @relation(fields: [reviewId], references: [id])
+  amount    Int
+  status    PaymentStatus
+  createdAt DateTime      @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ReviewStatus {
+  PENDING
+  PUBLISHED
+  UNPUBLISHED
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
+}
+
+enum PaymentStatus {
+  SUCCESS
+  FAILED
+  PENDING
+}
