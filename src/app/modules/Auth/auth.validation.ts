@@ -15,6 +15,7 @@ const loginUser = z.object({
   }),
 });
 
+
 const getMyProfile = z.object({
   body: z.object({
     email: z.string().email(),
