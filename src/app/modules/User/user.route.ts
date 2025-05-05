@@ -1,20 +1,20 @@
-// src/app/modules/user/user.routes.ts
 import express from "express";
 import { UserController } from "./user.controller";
 import auth from "../../middlewares/auth";
 import { userValidation } from "./user.validation";
 import validateRequest from "../../middlewares/validateRequest";
 import fileUploader from "../../../helpers/fileUploader";
+import { Role } from "@prisma/client";
 
 const router = express.Router();
 
-router.get("/", auth("ADMIN"), UserController.getAllUsers);
+router.get("/", UserController.getAllUsers);
 
-router.get("/my-profile", auth(), UserController.getMyProfile);
+router.get("/my-profile/:id", UserController.getMyProfile);
 
 router.patch(
-  "/my-profile",
-  auth(),
+  "/my-profile/:id",
+  auth(Role.ADMIN, Role.USER),
   fileUploader.single("file"),
   validateRequest(userValidation.updateUser),
   UserController.updateMyProfile
