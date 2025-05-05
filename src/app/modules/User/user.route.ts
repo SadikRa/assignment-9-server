@@ -1,25 +1,30 @@
-// src/app/modules/user/user.routes.ts
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { UserController } from "./user.controller";
 import auth from "../../middlewares/auth";
 import { userValidation } from "./user.validation";
-import validateRequest from "../../middlewares/validateRequest";
 import fileUploader from "../../../helpers/fileUploader";
+import { Role } from "@prisma/client";
 
 const router = express.Router();
 
-router.get("/", auth("ADMIN"), UserController.getAllUsers);
+router.get("/", UserController.getAllUsers);
 
-router.get("/my-profile", auth(), UserController.getMyProfile);
+router.get("/my-profile/:id", UserController.getMyProfile);
 
 router.patch(
   "/my-profile",
-  auth(),
-  fileUploader.single("file"),
-  validateRequest(userValidation.updateUser),
-  UserController.updateMyProfile
+  auth(Role.ADMIN, Role.USER),
+  fileUploader.single("image"),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = userValidation.updateUser.parse(JSON.parse(req.body.data));
+    UserController.updateMyProfile(req, res, next);
+  }
 );
 
-router.delete("/my-profile", auth(), UserController.deleteMyProfile);
+router.delete(
+  "/my-profile",
+  auth(Role.ADMIN, Role.USER),
+  UserController.deleteMyProfile
+);
 
 export const UserRoutes = router;

@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { jwtHelpers } from "../../helpers/jwtHalpers";
 import config from "../../config";
 import { Secret } from "jsonwebtoken";
-import ApiError from "../errors/AppError";
-import status from "http-status";
+import httpStatus from "http-status";
+import AppError from "../errors/AppError";
 
 const auth = (...roles: string[]) => {
   return async (
@@ -15,18 +15,18 @@ const auth = (...roles: string[]) => {
       const token = req.headers.authorization;
 
       if (!token) {
-        throw new ApiError(status.UNAUTHORIZED, "you are not authorize");
+        throw new AppError(httpStatus.UNAUTHORIZED, "you are not authorize");
       }
 
       const verifiedUser = jwtHelpers.verifyToken(
         token,
-        config.jwt.jwt_secret as Secret
+        config.jwt_secret as Secret
       );
 
       req.user = verifiedUser;
 
       if (roles.length && !roles.includes(verifiedUser.role)) {
-        throw new ApiError(status.UNAUTHORIZED, "you are not authorize");
+        throw new AppError(httpStatus.UNAUTHORIZED, "you are not authorize");
       }
 
       next();

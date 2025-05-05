@@ -1,4 +1,3 @@
-// src/app/modules/user/user.controller.ts
 import status from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
@@ -15,7 +14,8 @@ const getAllUsers = catchAsync(async (req, res) => {
 });
 
 const getMyProfile = catchAsync(async (req, res) => {
-  const result = await userService.getMyProfile(req.user.id);
+  const { id } = req.params;
+  const result = await userService.getMyProfile(id);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
@@ -25,7 +25,9 @@ const getMyProfile = catchAsync(async (req, res) => {
 });
 
 const updateMyProfile = catchAsync(async (req, res) => {
-  const result = await userService.updateMyProfile(req.user.id, req);
+  const { email } = req.user;
+
+  const result = await userService.updateMyProfile(email, req);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
@@ -35,7 +37,8 @@ const updateMyProfile = catchAsync(async (req, res) => {
 });
 
 const deleteMyProfile = catchAsync(async (req, res) => {
-  await userService.deleteMyProfile(req.user.id);
+  const { email } = req.user;
+  await userService.deleteMyProfile(email);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
