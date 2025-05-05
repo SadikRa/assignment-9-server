@@ -1,4 +1,3 @@
-// src/app/modules/user/user.controller.ts
 import status from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
@@ -38,7 +37,8 @@ const updateMyProfile = catchAsync(async (req, res) => {
 });
 
 const deleteMyProfile = catchAsync(async (req, res) => {
-  await userService.deleteMyProfile(req.user.id);
+  const { email } = req.user;
+  await userService.deleteMyProfile(email);
   sendResponse(res, {
     statusCode: status.OK,
     success: true,

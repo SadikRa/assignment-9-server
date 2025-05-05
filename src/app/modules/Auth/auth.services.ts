@@ -11,8 +11,8 @@ import { Role } from "@prisma/client";
 const registerUser = async (payload: any) => {
   if (!payload.email || !payload.password) {
     throw new AppError(
-      "Email and password are required",
-      httpStatus.BAD_REQUEST
+      httpStatus.BAD_REQUEST,
+      "Email and password are required"
     );
   }
   const isAccountExists = await prisma.account.findUnique({
@@ -20,12 +20,12 @@ const registerUser = async (payload: any) => {
   });
 
   if (isAccountExists) {
-    throw new AppError("Account already exists", httpStatus.BAD_REQUEST);
+    throw new AppError(httpStatus.BAD_REQUEST, "Account already exists");
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!emailRegex.test(payload.email)) {
-    throw new AppError("Invalid email format", httpStatus.BAD_REQUEST);
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid email format");
   }
 
   const hashedPassword = await bcrypt.hash(payload.password, 10);
@@ -52,7 +52,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
     where: { email: payload.email, isDeleted: false },
   });
   if (!isUserExists) {
-    throw new AppError("Account not found", httpStatus.NOT_FOUND);
+    throw new AppError(httpStatus.NOT_FOUND, "Account not found");
   }
 
   const isPasswordMatch = await bcrypt.compare(
@@ -61,7 +61,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
   );
 
   if (!isPasswordMatch) {
-    throw new AppError("Invalid password", httpStatus.UNAUTHORIZED);
+    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid password");
   }
 
   const { password, ...userData } = isUserExists;
@@ -100,7 +100,7 @@ const getMyProfile = async (email: string) => {
   });
 
   if (!user) {
-    throw new AppError("User not found", httpStatus.NOT_FOUND);
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
   return user;
 };
@@ -149,7 +149,7 @@ const changePassword = async (
     },
   });
   if (!isExistAccount) {
-    throw new AppError("Account not found !", httpStatus.NOT_FOUND);
+    throw new AppError(httpStatus.NOT_FOUND, "Account not found !");
   }
 
   const isCorrectPassword: boolean = await bcrypt.compare(
@@ -158,7 +158,7 @@ const changePassword = async (
   );
 
   if (!isCorrectPassword) {
-    throw new AppError("Old password is incorrect", httpStatus.UNAUTHORIZED);
+    throw new AppError(httpStatus.UNAUTHORIZED, "Old password is incorrect");
   }
 
   const hashedPassword: string = await bcrypt.hash(payload.newPassword, 10);
@@ -184,7 +184,7 @@ const forgetPassword = async (email: string) => {
   });
 
   if (!isAccountExists) {
-    throw new AppError("Account not found", 404);
+    throw new AppError(httpStatus.NOT_FOUND, "Account not found");
   }
 
   const resetToken = jwtHelpers.generateToken(
@@ -230,7 +230,7 @@ const resetPassword = async (
       config.reset_pass_token as Secret
     );
   } catch (err) {
-    throw new AppError("Invalid or expired token", httpStatus.UNAUTHORIZED);
+    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid or expired token");
   }
 
   const isAccountExists = await prisma.account.findUnique({
@@ -240,10 +240,10 @@ const resetPassword = async (
     },
   });
   if (!isAccountExists) {
-    throw new AppError("Account not found!!", httpStatus.NOT_FOUND);
+    throw new AppError(httpStatus.NOT_FOUND, "Account not found!!");
   }
   if (isAccountExists.email !== email) {
-    throw new AppError("Invalid email", httpStatus.UNAUTHORIZED);
+    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid email");
   }
 
   const hashedPassword: string = await bcrypt.hash(newPassword, 10);
