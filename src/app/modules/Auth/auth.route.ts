@@ -24,6 +24,7 @@ router.get(
 );
 
 router.post("/refresh-token", AuthController.refreshToken);
+
 router.post(
   "/change-password",
   auth(Role.ADMIN, Role.COMPANY, Role.USER),
@@ -35,6 +36,7 @@ router.post(
   validateRequest(AuthValidation.forgotPassword),
   AuthController.forgetPassword
 );
+
 router.post(
   "/reset-pass",
   validateRequest(AuthValidation.resetPassword),
