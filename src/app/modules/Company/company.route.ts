@@ -27,16 +27,16 @@ router.get("/:id", companyController.getACompany);
 
 // Update a Company
 router.patch(
-  "/update-company",
-  auth(Role.COMPANY),
+  "/update-company/:id",
+  auth(Role.COMPANY, Role.ADMIN),
   validateRequest(CompanyValidation.updateCompany),
   companyController.updateACompany
 );
 
 // delete a Company
 router.delete(
-  "/delete-company",
-  auth(Role.COMPANY),
+  "/delete-company/:id",
+  auth(Role.COMPANY, Role.ADMIN),
   companyController.deleteACompany
 );
 

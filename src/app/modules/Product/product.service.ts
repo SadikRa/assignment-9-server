@@ -43,13 +43,49 @@ const createProduct = async (req: Request) => {
   return result;
 };
 
-const getProducts = async () => {};
+/////   TO DO pagination and filter add Later
+const getProducts = async () => {
+  const result = await prisma.product.findMany();
+  return result;
+};
 
-const getAProduct = async (id: string) => {};
+const getAProduct = async (id: string) => {
+  const result = await prisma.product.findUniqueOrThrow({
+    where: {
+      id,
+      isDeleted: false,
+    },
+  });
 
-const updateAProduct = async (id: string, data: Product) => {};
+  return result;
+};
 
-const deleteAProduct = async (id: string) => {};
+const updateAProduct = async (id: string, data: Partial<Product>) => {
+  await prisma.product.findUniqueOrThrow({
+    where: { id },
+  });
+
+  if (!data || Object.keys(data).length === 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, "No data provided to update");
+  }
+
+  const result = await prisma.product.update({
+    where: { id },
+    data,
+  });
+
+  return result;
+};
+
+const deleteAProduct = async (id: string) => {
+  await prisma.product.findUniqueOrThrow({ where: { id: id } });
+
+  const result = await prisma.product.update({
+    where: { id: id, isDeleted: false },
+    data: { isDeleted: true },
+  });
+  return result;
+};
 
 export const ProductService = {
   createProduct,
