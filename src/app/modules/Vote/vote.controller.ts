@@ -2,10 +2,11 @@ import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { VoteService } from "./vote.service";
+import { Request } from "express";
 
 // Create vote
 const createVote = catchAsync(async (req, res) => {
-  const result = await VoteService.createVote(req);
+  const result = await VoteService.createVote(req as Request);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,

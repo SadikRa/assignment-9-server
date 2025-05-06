@@ -6,7 +6,7 @@ import { Vote } from "@prisma/client";
 
 const createVote = async (req: Request) => {
   const { reviewId, accountId } = req.body;
-
+  
   const isReviewExist = await prisma.review.findUnique({
     where: { id: reviewId },
   });
@@ -22,9 +22,14 @@ const createVote = async (req: Request) => {
   if (!isAccountExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Account not found");
   }
-
+  const { upVote, downVote } = req.body;
   const vote = await prisma.vote.create({
-    data: req.body,
+    data: {
+      reviewId,
+      accountId,
+      upVote,
+      downVote,
+    },
   });
 
   return vote;
