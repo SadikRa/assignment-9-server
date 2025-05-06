@@ -23,6 +23,7 @@ model Account {
   reviews           Review[]
   votes             Vote[]
   ReviewComment     ReviewComment[]
+  Payment           Payment[]
 
   @@map("accounts")
 }
@@ -92,10 +93,12 @@ model Review {
   id             String          @id @default(uuid())
   title          String
   rating         Int
-  categoryId     String
   productId      String?
   product        Product?        @relation(fields: [productId], references: [id])
   purchaseSource String?
+  premiumPrice   Float?          @default(5.00)
+  previewContent String?
+  fullContent    String?
   images         String[]
   isPremium      Boolean         @default(false)
   accountId      String
@@ -107,6 +110,7 @@ model Review {
   isDeleted      Boolean         @default(false)
   votes          Vote[]
   ReviewComment  ReviewComment[]
+  Payment        Payment[]
 
   @@map("reviews")
 }
@@ -139,6 +143,21 @@ model ReviewComment {
   @@map("review_comments")
 }
 
+model Payment {
+  id        String        @id @default(uuid())
+  amount    Float
+  currency  String        @default("USD")
+  status    PaymentStatus
+  accountId String
+  account   Account       @relation(fields: [accountId], references: [id])
+  reviewId  String
+  review    Review        @relation(fields: [reviewId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("payments")
+}
+
 enum Role {
   USER
   COMPANY
@@ -154,10 +173,18 @@ enum AccountStatus {
 enum ReviewStatus {
   PENDING
   APPROVED
+  REJECTED
 }
 
 enum ProductCategory {
   GADGETS
   CLOTHING
   BOOKS
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
 }
