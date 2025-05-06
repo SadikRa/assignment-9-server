@@ -11,7 +11,7 @@ const router = Router();
 /// create Company
 router.post(
   "/create-company",
-  auth(Role.ADMIN),
+  auth(Role.ADMIN, Role.USER),
   fileUploader.single("image"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = CompanyValidation.createCompany.parse(JSON.parse(req.body.data));

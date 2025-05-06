@@ -8,7 +8,6 @@ import { Product } from "@prisma/client";
 /// create product
 const createProduct = async (req: Request) => {
   const { email } = req.user;
-  console.log(email);
 
   const account = await prisma.account.findUnique({
     where: { email },

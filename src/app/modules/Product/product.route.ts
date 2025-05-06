@@ -11,7 +11,7 @@ const router = Router();
 /// create product
 router.post(
   "/create-product",
-  auth(Role.COMPANY, Role.ADMIN),
+  auth(Role.COMPANY, Role.ADMIN, Role.USER),
   fileUploader.single("image"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = productValidation.createProduct.parse(JSON.parse(req.body.data));
