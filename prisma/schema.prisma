@@ -91,10 +91,8 @@ model Product {
 model Review {
   id             String          @id @default(uuid())
   title          String
-  description    String
   rating         Int
   categoryId     String
-  category       Category        @relation(fields: [categoryId], references: [id])
   productId      String?
   product        Product?        @relation(fields: [productId], references: [id])
   purchaseSource String?
@@ -117,6 +115,8 @@ model Vote {
   id        String   @id @default(uuid())
   reviewId  String
   accountId String
+  upVote    Int
+  downVote  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   review    Review   @relation(fields: [reviewId], references: [id])
@@ -154,13 +154,6 @@ enum AccountStatus {
 enum ReviewStatus {
   PENDING
   APPROVED
-}
-
-model Category {
-  id            String   @id @default(uuid())
-  categoryImage String
-  name          String   @unique
-  reviews       Review[]
 }
 
 enum ProductCategory {
