@@ -50,6 +50,7 @@ const getProducts = async () => {
         include: {
           votes: true,
           ReviewComment: true,
+          account: true,
         },
       },
     },
@@ -68,6 +69,7 @@ const getAProduct = async (id: string) => {
         include: {
           votes: true,
           ReviewComment: true,
+          account: true,
         },
       },
     },
