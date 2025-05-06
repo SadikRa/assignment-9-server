@@ -44,7 +44,16 @@ const createProduct = async (req: Request) => {
 
 /////   TO DO pagination and filter add Later
 const getProducts = async () => {
-  const result = await prisma.product.findMany();
+  const result = await prisma.product.findMany({
+    include: {
+      reviews: {
+        include: {
+          votes: true,
+          ReviewComment: true,
+        },
+      },
+    },
+  });
   return result;
 };
 
@@ -53,6 +62,14 @@ const getAProduct = async (id: string) => {
     where: {
       id,
       isDeleted: false,
+    },
+    include: {
+      reviews: {
+        include: {
+          votes: true,
+          ReviewComment: true,
+        },
+      },
     },
   });
 
