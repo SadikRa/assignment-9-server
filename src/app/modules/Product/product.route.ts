@@ -27,16 +27,17 @@ router.get("/:id", ProductController.getAProduct);
 
 // Update a Product
 router.patch(
-  "/update-product",
-  auth(Role.COMPANY),
+  "/update-product/:id",
+  auth(Role.COMPANY, Role.ADMIN),
   validateRequest(productValidation.updateAProduct),
   ProductController.updateAProduct
 );
 
 // delete a Product
 router.delete(
-  "/delete-product",
-  auth(Role.COMPANY),
+  "/delete-product/:id",
+  auth(Role.COMPANY, Role.ADMIN),
   ProductController.deleteAProduct
 );
+
 export const productRouters = router;

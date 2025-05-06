@@ -24,24 +24,22 @@ const createProduct = z.object({
 });
 
 const updateAProduct = z.object({
-  body: z.object({
-    name: z.string().min(1, { message: "Product name is required" }).optional(),
-    price: z
-      .preprocess(
-        (val) => Number(val),
-        z.number().nonnegative({ message: "Price must be 0 or more" })
-      )
-      .optional(),
+  name: z.string().min(1, { message: "Product name is required" }).optional(),
+  price: z
+    .preprocess(
+      (val) => Number(val),
+      z.number().nonnegative({ message: "Price must be 0 or more" })
+    )
+    .optional(),
 
-    description: z.string().optional(),
-    imageUrl: z.string().url({ message: "Invalid image URL" }).optional(),
-    category: ProductCategoryEnum.optional(),
-    isDeleted: z.boolean().optional(),
-    companyId: z
-      .string()
-      .uuid({ message: "Invalid company ID format" })
-      .optional(),
-  }),
+  description: z.string().optional(),
+  imageUrl: z.string().url({ message: "Invalid image URL" }).optional(),
+  category: ProductCategoryEnum.optional(),
+  isDeleted: z.boolean().optional(),
+  companyId: z
+    .string()
+    .uuid({ message: "Invalid company ID format" })
+    .optional(),
 });
 
 export const productValidation = {

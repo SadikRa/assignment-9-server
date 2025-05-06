@@ -42,17 +42,46 @@ const createCompany = async (req: Request) => {
   return company;
 };
 
-// get Company
-const getCompany = async () => {};
+// /////   TO DO pagination and filter add Later
+const getCompany = async () => {
+  const result = await prisma.company.findMany()
+};
 
 // get A Company
-const getACompany = async (id: string) => {};
+const getACompany = async (id: string) => {
+  const result = await prisma.company.findUniqueOrThrow({
+    where: {
+      id,
+      isDeleted: false,
+    },
+  });
+
+  return result;
+};
 
 // update A Company
-const updateACompany = async (id: string, data: Company) => {};
+const updateACompany = async (id: string, data: Company) => {
+  await prisma.company.findUniqueOrThrow({
+    where: { id: id },
+  });
+
+  const result = await prisma.company.update({
+    where: { id: id },
+    data: data,
+  });
+  return result;
+};
 
 //delete A Company
-const deleteACompany = async (id: string) => {};
+const deleteACompany = async (id: string) => {
+  await prisma.company.findUniqueOrThrow({ where: { id: id } });
+
+  const result = await prisma.company.update({
+    where: { id: id, isDeleted: false },
+    data: { isDeleted: true },
+  });
+  return result;
+};
 
 export const CompanyService = {
   createCompany,

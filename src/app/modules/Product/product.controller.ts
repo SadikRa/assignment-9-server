@@ -42,11 +42,8 @@ const getAProduct = catchAsync(async (req, res) => {
 
 /// update A Product
 const updateAProduct = catchAsync(async (req, res) => {
-  const { productId } = req.query;
-  const result = await ProductService.updateAProduct(
-    productId as string,
-    req.body
-  );
+  const { id } = req.params;
+  const result = await ProductService.updateAProduct(id as string, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -58,8 +55,8 @@ const updateAProduct = catchAsync(async (req, res) => {
 
 /// update A Product
 const deleteAProduct = catchAsync(async (req, res) => {
-  const { productId } = req.query;
-  const result = await ProductService.deleteAProduct(productId as string);
+  const { id } = req.params;
+  const result = await ProductService.deleteAProduct(id as string);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,

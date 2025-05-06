@@ -42,11 +42,8 @@ const getACompany = catchAsync(async (req, res) => {
 
 /// update A Company
 const updateACompany = catchAsync(async (req, res) => {
-  const { CompanyId } = req.query;
-  const result = await CompanyService.updateACompany(
-    CompanyId as string,
-    req.body
-  );
+  const { id } = req.params;
+  const result = await CompanyService.updateACompany(id as string, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -58,8 +55,8 @@ const updateACompany = catchAsync(async (req, res) => {
 
 /// update A Company
 const deleteACompany = catchAsync(async (req, res) => {
-  const { CompanyId } = req.query;
-  const result = await CompanyService.deleteACompany(CompanyId as string);
+  const { id } = req.params;
+  const result = await CompanyService.deleteACompany(id as string);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
