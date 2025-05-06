@@ -44,8 +44,8 @@ const createCompany = async (req: Request) => {
 
 // /////   TO DO pagination and filter add Later
 const getCompany = async () => {
-  const result = await prisma.company.findMany()
-  return result
+  const result = await prisma.company.findMany();
+  return result;
 };
 
 // get A Company
