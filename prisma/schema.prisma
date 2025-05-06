@@ -72,17 +72,18 @@ model Admin {
 }
 
 model Product {
-  id          String   @id @default(uuid())
+  id          String          @id @default(uuid())
   name        String
   price       Float
   description String?
   imageUrl    String?
-  isDeleted   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category    ProductCategory
+  isDeleted   Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   reviews     Review[]
   companyId   String?
-  company     Company? @relation(fields: [companyId], references: [id])
+  company     Company?        @relation(fields: [companyId], references: [id])
 
   @@map("products")
 }
@@ -160,4 +161,10 @@ model Category {
   categoryImage String
   name          String   @unique
   reviews       Review[]
+}
+
+enum ProductCategory {
+  GADGETS
+  CLOTHING
+  BOOKS
 }

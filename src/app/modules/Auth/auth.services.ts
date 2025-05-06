@@ -8,6 +8,8 @@ import config from "../../../config";
 import emailSender from "../../../shared/emailSender";
 import { Role } from "@prisma/client";
 
+
+// register user 
 const registerUser = async (payload: any) => {
   if (!payload.email || !payload.password) {
     throw new AppError(
@@ -47,6 +49,8 @@ const registerUser = async (payload: any) => {
   return result;
 };
 
+
+// Login user
 const loginUser = async (payload: { email: string; password: string }) => {
   const isUserExists = await prisma.account.findUnique({
     where: { email: payload.email, isDeleted: false },
@@ -89,6 +93,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
   };
 };
 
+// get my profile
 const getMyProfile = async (email: string) => {
   const user = await prisma.account.findUnique({
     where: { email: email, isDeleted: false },
@@ -105,6 +110,7 @@ const getMyProfile = async (email: string) => {
   return user;
 };
 
+// refresh token
 const refreshToken = async (token: string) => {
   let decodedData;
   try {
@@ -135,6 +141,7 @@ const refreshToken = async (token: string) => {
   return accessToken;
 };
 
+// change password
 const changePassword = async (
   user: JwtPayload,
   payload: {
@@ -175,6 +182,8 @@ const changePassword = async (
   return "Password update is successful.";
 };
 
+
+/// forget password
 const forgetPassword = async (email: string) => {
   const isAccountExists = await prisma.account.findUnique({
     where: {
