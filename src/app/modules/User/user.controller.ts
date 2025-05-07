@@ -24,6 +24,17 @@ const getMyProfile = catchAsync(async (req, res) => {
   });
 });
 
+const getAnAccountByEmail = catchAsync(async (req, res) => {
+  const { email } = req.params;
+  const result = await userService.getAccountByEmail(email);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Account retrieved successfully",
+    data: result,
+  });
+});
+
 const updateMyProfile = catchAsync(async (req, res) => {
   const { email } = req.user;
 
@@ -50,6 +61,7 @@ const deleteMyProfile = catchAsync(async (req, res) => {
 export const UserController = {
   getAllUsers,
   getMyProfile,
+  getAnAccountByEmail,
   updateMyProfile,
   deleteMyProfile,
 };
