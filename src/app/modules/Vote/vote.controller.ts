@@ -6,6 +6,9 @@ import { Request } from "express";
 
 // Create vote
 const createVote = catchAsync(async (req, res) => {
+  // TO DO 
+  console.log("object", req.body);
+  console.log(req.params);
   const result = await VoteService.createVote(req as Request);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,

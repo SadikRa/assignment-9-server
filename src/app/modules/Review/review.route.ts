@@ -9,11 +9,13 @@ import { reviewValidation } from "./review.validation";
 const router = Router();
 
 /// create review
+
+// TO DO VALIDATION
 router.post(
   "/create-review",
   auth(Role.USER, Role.COMPANY, Role.ADMIN),
-  fileUploader.single("image"),
-  validateRequest(reviewValidation.createReviewSchema),
+  // fileUploader.single("image"),
+  // validateRequest(reviewValidation.createReviewSchema),
   reviewController.createReview
 );
 
@@ -29,14 +31,14 @@ router.get(
 
 /// update review
 router.patch(
-  "update-review/:id",
+  "/update-review/:id",
   auth(Role.COMPANY, Role.ADMIN),
   validateRequest(reviewValidation.updateReviewSchema),
   reviewController.updateAReview
 );
 
 router.delete(
-  "delete-review/:id",
+  "/delete-review/:id",
   auth(Role.COMPANY, Role.ADMIN),
   reviewController.deleteAReview
 );
