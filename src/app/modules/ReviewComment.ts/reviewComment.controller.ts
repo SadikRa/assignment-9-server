@@ -6,9 +6,6 @@ import { Request } from "express";
 
 // Create review comment
 const createReviewComment = catchAsync(async (req, res) => {
-    // TO DO 
-    console.log("object", req.body);
-    console.log(req.params);
   const result = await ReviewCommentService.createReviewComment(req as Request);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,

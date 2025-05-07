@@ -11,7 +11,7 @@ const router = Router();
 router.post(
   "/create-vote",
   auth(Role.USER, Role.ADMIN),
-  // validateRequest(voteValidation.createVote),
+  validateRequest(voteValidation.createVote),
   voteController.createVote
 );
 
