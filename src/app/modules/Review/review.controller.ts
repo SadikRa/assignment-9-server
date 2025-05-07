@@ -66,10 +66,39 @@ const deleteAReview = catchAsync(async (req, res) => {
   });
 });
 
+// init Premium Payment
+const initPremiumPayment = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const user = req.user;
+
+  const result = await reviewService.initPremiumPayment(id, user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Payment initiated successfully",
+    data: result,
+  });
+});
+
+///validate Premium Payment
+const validatePremiumPayment = catchAsync(async (req, res) => {
+  const result = await reviewService.validatePremiumPayment(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Payment validated successfully",
+    data: result,
+  });
+});
+
 export const reviewController = {
   createReview,
   getReview,
   getAReview,
   updateAReview,
   deleteAReview,
+  initPremiumPayment,
+  validatePremiumPayment,
 };

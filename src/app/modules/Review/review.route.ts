@@ -41,11 +41,14 @@ router.delete(
   reviewController.deleteAReview
 );
 
-// // Premium review payment endpoint
-// router.post(
-//   '/:id/purchase',
-//   auth(Role.USER),
-//   reviewController.purchasePremiumReview
-// );
+// init-payment
+router.post(
+  "/:id/init-payment",
+  auth(Role.USER),
+  reviewController.initPremiumPayment
+);
+
+// validate payment
+router.post("/validate-payment", reviewController.validatePremiumPayment);
 
 export const reviewRouters = router;
