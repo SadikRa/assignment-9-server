@@ -10,7 +10,7 @@ const router = Router();
 router.post(
   "/create-review-comment",
   auth(Role.USER, Role.ADMIN),
-  // validateRequest(ReviewCommentValidation.createReviewComment),
+  validateRequest(ReviewCommentValidation.createReviewComment),
   reviewCommentController.createReviewComment
 );
 

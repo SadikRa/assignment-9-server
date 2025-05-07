@@ -1,12 +1,11 @@
 import httpStatus from "http-status";
-import { Request } from "express";
 import prisma from "../../../shared/prisma";
 import AppError from "../../errors/AppError";
 import { Vote } from "@prisma/client";
 
-const createVote = async (req: Request) => {
-  const { reviewId, accountId } = req.body;
-  
+const createVote = async (data: any) => {
+  const { reviewId, accountId, upVote, downVote } = data;
+
   const isReviewExist = await prisma.review.findUnique({
     where: { id: reviewId },
   });
@@ -22,14 +21,9 @@ const createVote = async (req: Request) => {
   if (!isAccountExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Account not found");
   }
-  const { upVote, downVote } = req.body;
+
   const vote = await prisma.vote.create({
-    data: {
-      reviewId,
-      accountId,
-      upVote,
-      downVote,
-    },
+    data: { reviewId, accountId, upVote, downVote },
   });
 
   return vote;

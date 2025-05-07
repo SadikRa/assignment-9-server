@@ -9,13 +9,11 @@ import { reviewValidation } from "./review.validation";
 const router = Router();
 
 /// create review
-
-// TO DO VALIDATION
 router.post(
   "/create-review",
   auth(Role.USER, Role.COMPANY, Role.ADMIN),
   // fileUploader.single("image"),
-  // validateRequest(reviewValidation.createReviewSchema),
+  validateRequest(reviewValidation.createReviewSchema),
   reviewController.createReview
 );
 
