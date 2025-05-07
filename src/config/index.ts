@@ -18,4 +18,14 @@ export default {
   cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
   cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
+  ssl: {
+    storeId: process.env.STORE_ID,
+    storePass: process.env.STORE_PASS,
+    successUrl: process.env.SUCCESS_URL,
+    cancelUrl: process.env.CANCEL_URL,
+    failUrl: process.env.FAIL_URL,
+    sslPaymentApi: process.env.SSL_PAYMENT_API,
+    sslValidationApi: process.env.SSL_VALIDATIOIN_API,
+    ipnUrl: process.env.SSL_IPN_URL,
+  },
 };

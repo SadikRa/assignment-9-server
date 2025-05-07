@@ -3,7 +3,8 @@ import { Request } from "express";
 import prisma from "../../../shared/prisma";
 import AppError from "../../errors/AppError";
 import uploadCloud from "../../../shared/cloudinary";
-import { Review, ReviewStatus, Role } from "@prisma/client";
+import { PaymentStatus, Review, ReviewStatus, Role } from "@prisma/client";
+import { SSLService } from "../SSL/ssl.service";
 
 /// create review
 const createReview = async (req: Request) => {
@@ -43,6 +44,7 @@ const createReview = async (req: Request) => {
   return result;
 };
 
+/// get review
 const getReviews = async () => {
   const result = await prisma.review.findMany({
     include: {
@@ -64,6 +66,7 @@ const getReviews = async () => {
   return result;
 };
 
+/// get a review
 const getAReview = async (id: string) => {
   const result = await prisma.review.findUniqueOrThrow({
     where: {
@@ -90,6 +93,7 @@ const getAReview = async (id: string) => {
   return result;
 };
 
+/// update review
 const updateAReview = async (id: string, data: Partial<Review>) => {
   await prisma.review.findUniqueOrThrow({
     where: { id },
@@ -107,6 +111,7 @@ const updateAReview = async (id: string, data: Partial<Review>) => {
   return result;
 };
 
+/// delete review
 const deleteAReview = async (id: string) => {
   await prisma.review.findUniqueOrThrow({ where: { id: id } });
 
@@ -116,6 +121,91 @@ const deleteAReview = async (id: string) => {
   });
   return result;
 };
+// init Premium Payment
+const initPremiumPayment = async (reviewId: string, user: any) => {
+  const review = await prisma.review.findUnique({
+    where: {
+      id: reviewId,
+      isPremium: true,
+      status: "APPROVED",
+    },
+    include: {
+      account: {
+        select: {
+          id: true,
+          email: true,
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!review) {
+    throw new AppError(httpStatus.NOT_FOUND, "Premium review not found");
+  }
+
+  if (!review.premiumPrice || review.premiumPrice <= 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid premium price");
+  }
+
+  const today = new Date();
+  const transactionId = `REV-${today.getFullYear()}${today.getMonth()}${today.getDate()}-${today.getHours()}${today.getMinutes()}${today.getSeconds()}`;
+
+  // Create payment record
+  const payment = await prisma.payment.create({
+    data: {
+      amount: review.premiumPrice,
+      status: PaymentStatus.PENDING,
+      accountId: review.accountId,
+      reviewId: review.id,
+      currency: "BDT",
+    },
+  });
+
+  // Prepare SSLCommerz payload
+  const paymentData = {
+    amount: review.premiumPrice,
+    transactionId: payment.id,
+    name: null,
+    email: review.account.email,
+    address: null,
+    phoneNumber: null,
+  };
+
+  // Initiate payment
+  const result = await SSLService.initPayment(paymentData);
+
+  return {
+    paymentUrl: result.GatewayPageURL,
+    paymentId: payment.id,
+  };
+};
+
+const validatePremiumPayment = async (payload: any) => {
+  // Validate payment with SSLCommerz
+  const validationResponse = await SSLService.validatePayment(payload);
+
+  // Update payment status
+  await prisma.payment.update({
+    where: { id: payload.tran_id },
+    data: {
+      status: PaymentStatus.COMPLETED,
+      paymentGatewayData: validationResponse,
+    },
+    include: {
+      review: true,
+    },
+  });
+
+  return {
+    success: true,
+    message: "Payment completed successfully",
+  };
+};
 
 export const reviewService = {
   createReview,
@@ -123,4 +213,6 @@ export const reviewService = {
   getAReview,
   updateAReview,
   deleteAReview,
+  initPremiumPayment,
+  validatePremiumPayment,
 };
