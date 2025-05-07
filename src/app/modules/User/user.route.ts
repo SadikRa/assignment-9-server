@@ -10,6 +10,7 @@ const router = express.Router();
 router.get("/", UserController.getAllUsers);
 
 router.get("/my-profile/:id", UserController.getMyProfile);
+router.get("/:email", UserController.getAnAccountByEmail);
 
 router.patch(
   "/my-profile",
