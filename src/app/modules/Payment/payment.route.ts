@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get("/ipn", PaymentController.validatePayment);
 
-router.post("/init-payment/:reviewId", PaymentController.initPayment);
+router.post("/init-payment", PaymentController.initPayment);
 
 export const PaymentRoutes = router;

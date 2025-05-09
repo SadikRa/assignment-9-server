@@ -3,14 +3,27 @@ import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { PaymentService } from "./payment.services";
 
-const initPayment = catchAsync(async (req, res) => {
-  const { reviewId } = req.params;
-  const result = await PaymentService.initPayment(reviewId);
+// const initPayment = catchAsync(async (req, res) => {
+//   const { reviewId } = req.params;
+//   const result = await PaymentService.initPayment(reviewId);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: "Payment initiate successfully",
+//     data: result,
+//   });
+// });
+
+// Initialize Payment
+export const initPayment = catchAsync(async (req, res) => {
+  // console.log(req.body);
+  const paymentUrl = await PaymentService.initPayment(req.body);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Payment initiate successfully",
-    data: result,
+    message: "Payment initialization successful",
+    data: { paymentUrl },
   });
 });
 
