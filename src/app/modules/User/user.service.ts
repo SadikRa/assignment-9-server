@@ -72,6 +72,7 @@ const getAccountByEmail = async (email: string) => {
       isDeleted: false,
     },
     include: {
+      user: true,
       reviews: true,
       votes: true,
       ReviewComment: true,
