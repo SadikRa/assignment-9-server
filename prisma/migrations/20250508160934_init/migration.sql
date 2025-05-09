@@ -5,7 +5,13 @@ CREATE TYPE "Role" AS ENUM ('USER', 'COMPANY', 'ADMIN');
 CREATE TYPE "AccountStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'SUSPENDED');
 
 -- CreateEnum
-CREATE TYPE "ReviewStatus" AS ENUM ('PENDING', 'APPROVED');
+CREATE TYPE "ReviewStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+
+-- CreateEnum
+CREATE TYPE "ProductCategory" AS ENUM ('GADGETS', 'CLOTHING', 'BOOKS');
+
+-- CreateEnum
+CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED');
 
 -- CreateTable
 CREATE TABLE "accounts" (
@@ -72,6 +78,7 @@ CREATE TABLE "products" (
     "price" DOUBLE PRECISION NOT NULL,
     "description" TEXT,
     "imageUrl" TEXT,
+    "category" "ProductCategory" NOT NULL,
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -84,11 +91,12 @@ CREATE TABLE "products" (
 CREATE TABLE "reviews" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
-    "categoryId" TEXT NOT NULL,
     "productId" TEXT,
     "purchaseSource" TEXT,
+    "premiumPrice" DOUBLE PRECISION DEFAULT 5.00,
+    "previewContent" TEXT,
+    "fullContent" TEXT,
     "images" TEXT[],
     "isPremium" BOOLEAN NOT NULL DEFAULT false,
     "accountId" TEXT NOT NULL,
@@ -106,6 +114,8 @@ CREATE TABLE "votes" (
     "id" TEXT NOT NULL,
     "reviewId" TEXT NOT NULL,
     "accountId" TEXT NOT NULL,
+    "upVote" INTEGER NOT NULL,
+    "downVote" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -126,12 +136,18 @@ CREATE TABLE "review_comments" (
 );
 
 -- CreateTable
-CREATE TABLE "Category" (
+CREATE TABLE "payments" (
     "id" TEXT NOT NULL,
-    "categoryImage" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'BDT',
+    "status" "PaymentStatus" NOT NULL,
+    "accountId" TEXT NOT NULL,
+    "paymentGatewayData" JSONB,
+    "reviewId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "payments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -146,9 +162,6 @@ CREATE UNIQUE INDEX "companies_accountId_key" ON "companies"("accountId");
 -- CreateIndex
 CREATE UNIQUE INDEX "admins_accountId_key" ON "admins"("accountId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
-
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -160,9 +173,6 @@ ALTER TABLE "admins" ADD CONSTRAINT "admins_accountId_fkey" FOREIGN KEY ("accoun
 
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "reviews" ADD CONSTRAINT "reviews_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -181,3 +191,9 @@ ALTER TABLE "review_comments" ADD CONSTRAINT "review_comments_accountId_fkey" FO
 
 -- AddForeignKey
 ALTER TABLE "review_comments" ADD CONSTRAINT "review_comments_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "payments" ADD CONSTRAINT "payments_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "payments" ADD CONSTRAINT "payments_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

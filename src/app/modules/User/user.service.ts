@@ -1,3 +1,4 @@
+import { reviewValidation } from "./../Review/review.validation";
 import status from "http-status";
 
 import { Request } from "express";
@@ -57,7 +58,29 @@ const getMyProfile = async (id: string) => {
     },
   });
   if (!user) {
-    throw new AppError("User not found", status.NOT_FOUND);
+    throw new AppError(status.NOT_FOUND, "User not found");
+  }
+
+  return user;
+};
+
+// find by email
+const getAccountByEmail = async (email: string) => {
+  const user = await prisma.account.findUnique({
+    where: {
+      email,
+      isDeleted: false,
+    },
+    include: {
+      user: true,
+      reviews: true,
+      votes: true,
+      ReviewComment: true,
+      Payment: true,
+    },
+  });
+  if (!user) {
+    throw new AppError(status.NOT_FOUND, "User not found");
   }
 
   return user;
@@ -76,7 +99,7 @@ const updateMyProfile = async (email: string, req: Request) => {
     },
   });
   if (!isAccountExist) {
-    throw new AppError("User not found", status.NOT_FOUND);
+    throw new AppError(status.NOT_FOUND, "User not found");
   }
 
   // main update logic
@@ -121,7 +144,7 @@ const deleteMyProfile = async (email: string) => {
     },
   });
   if (!isAccountExist) {
-    throw new AppError("Account not found", status.NOT_FOUND);
+    throw new AppError(status.NOT_FOUND, "Account not found");
   }
 
   return await prisma.$transaction(async (tClient) => {
@@ -151,4 +174,5 @@ export const userService = {
   getMyProfile,
   updateMyProfile,
   deleteMyProfile,
+  getAccountByEmail,
 };
