@@ -2,8 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import { UserController } from "./user.controller";
 import auth from "../../middlewares/auth";
 import { userValidation } from "./user.validation";
-import fileUploader from "../../../helpers/fileUploader";
 import { Role } from "@prisma/client";
+import { fileUploader } from "../../../helpers/fileUploader";
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.patch("/make-admin/:id", UserController.makeAdmin);
 router.patch(
   "/my-profile",
   auth(Role.ADMIN, Role.USER),
-  fileUploader.single("image"),
+  fileUploader.upload.single("image"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = userValidation.updateUser.parse(JSON.parse(req.body.data));
     UserController.updateMyProfile(req, res, next);

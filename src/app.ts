@@ -9,7 +9,7 @@ const app: Application = express();
 
 app.use(
   cors({
-    origin: ["*", "http://localhost:3000"],
+    origin: ["*", "https://criti-check.vercel.app"],
   })
 );
 app.use(express.json({ limit: "50mb" }));

@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { CompanyValidation } from "./company.validation";
-import fileUploader from "../../../helpers/fileUploader";
 import { Role } from "@prisma/client";
 import auth from "../../middlewares/auth";
 import { companyController } from "./company.controller";
 import validateRequest from "../../middlewares/validateRequest";
+import { fileUploader } from "../../../helpers/fileUploader";
 
 const router = Router();
 
@@ -12,7 +12,7 @@ const router = Router();
 router.post(
   "/create-company",
   auth(Role.ADMIN, Role.USER),
-  fileUploader.single("image"),
+  fileUploader.upload.single("image"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = CompanyValidation.createCompany.parse(JSON.parse(req.body.data));
     companyController.createCompany(req, res, next);
