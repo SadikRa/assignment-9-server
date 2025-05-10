@@ -17,6 +17,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const cloudinary_1 = __importDefault(require("../../../shared/cloudinary"));
+const client_1 = require("@prisma/client");
 // get all users
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma_1.default.user.findMany({
@@ -70,6 +71,50 @@ const getMyProfile = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "User not found");
     }
     return user;
+});
+// find by email
+const getAccountByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield prisma_1.default.account.findUnique({
+        where: {
+            email,
+            isDeleted: false,
+        },
+        include: {
+            user: true,
+            reviews: true,
+            votes: true,
+            ReviewComment: true,
+            Payment: true,
+        },
+    });
+    if (!user) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "User not found");
+    }
+    return user;
+});
+//make Admin
+const makeAdmin = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield prisma_1.default.account.findUnique({
+        where: {
+            id: id,
+            isDeleted: false,
+        },
+    });
+    if (!user) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "User not found");
+    }
+    const updatedAccount = yield prisma_1.default.account.update({
+        where: {
+            id: id,
+        },
+        data: {
+            role: client_1.Role.ADMIN,
+        },
+    });
+    return {
+        userId: user.id,
+        newRole: updatedAccount.role,
+    };
 });
 // update user
 const updateMyProfile = (email, req) => __awaiter(void 0, void 0, void 0, function* () {
@@ -152,6 +197,8 @@ const deleteMyProfile = (email) => __awaiter(void 0, void 0, void 0, function* (
 exports.userService = {
     getAllUsers,
     getMyProfile,
+    makeAdmin,
     updateMyProfile,
     deleteMyProfile,
+    getAccountByEmail,
 };

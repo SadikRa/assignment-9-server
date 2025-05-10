@@ -20,18 +20,13 @@ const cloudinary_1 = __importDefault(require("../../../shared/cloudinary"));
 /// create product
 const createProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.user;
-    const account = yield prisma_1.default.account.findUnique({
+    yield prisma_1.default.account.findUniqueOrThrow({
         where: { email },
-        include: { company: true },
     });
-    if (!account || !account.company) {
-        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Company account not authorized or not found!");
-    }
     if (req.file) {
         const uploadedImage = yield (0, cloudinary_1.default)(req.file);
         req.body.imageUrl = uploadedImage === null || uploadedImage === void 0 ? void 0 : uploadedImage.secure_url;
     }
-    req.body.companyId = account.company.id;
     const { name, price, description, category } = req.body;
     const result = yield prisma_1.default.product.create({
         data: {
@@ -46,8 +41,14 @@ const createProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
 /////   TO DO pagination and filter add Later
 const getProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.product.findMany({
+        orderBy: {
+            createdAt: "desc", // latest products first
+        },
         include: {
             reviews: {
+                orderBy: {
+                    createdAt: "desc", // latest reviews first
+                },
                 include: {
                     votes: true,
                     ReviewComment: true,
@@ -66,6 +67,9 @@ const getAProduct = (id) => __awaiter(void 0, void 0, void 0, function* () {
         },
         include: {
             reviews: {
+                orderBy: {
+                    createdAt: "desc", // newest reviews first
+                },
                 include: {
                     votes: true,
                     ReviewComment: true,

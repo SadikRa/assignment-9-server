@@ -36,6 +36,26 @@ const getMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const makeAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield user_service_1.userService.makeAdmin(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "User role updated to ADMIN successfully",
+        data: result
+    });
+}));
+const getAnAccountByEmail = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email } = req.params;
+    const result = yield user_service_1.userService.getAccountByEmail(email);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Account retrieved successfully",
+        data: result,
+    });
+}));
 const updateMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.user;
     const result = yield user_service_1.userService.updateMyProfile(email, req);
@@ -59,6 +79,8 @@ const deleteMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
 exports.UserController = {
     getAllUsers,
     getMyProfile,
+    makeAdmin,
+    getAnAccountByEmail,
     updateMyProfile,
     deleteMyProfile,
 };

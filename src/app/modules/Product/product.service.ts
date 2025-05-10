@@ -9,24 +9,14 @@ import { Product } from "@prisma/client";
 const createProduct = async (req: Request) => {
   const { email } = req.user;
 
-  const account = await prisma.account.findUnique({
+  await prisma.account.findUniqueOrThrow({
     where: { email },
-    include: { company: true },
   });
-
-  if (!account || !account.company) {
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      "Company account not authorized or not found!"
-    );
-  }
 
   if (req.file) {
     const uploadedImage = await uploadCloud(req.file);
     req.body.imageUrl = uploadedImage?.secure_url;
   }
-
-  req.body.companyId = account.company.id;
 
   const { name, price, description, category } = req.body;
 
