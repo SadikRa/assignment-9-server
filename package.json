@@ -8,6 +8,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "prisma generate && tsc",
     "deploy": "prisma migrate deploy",
+    "start": "NODE_ENV=production  node ./dist/server.js",
+    "preinstall": "prisma generate",
     "prod": "NODE_ENV=production  node ./dist/server.js",
     "postinstall": "prisma generate"
   },

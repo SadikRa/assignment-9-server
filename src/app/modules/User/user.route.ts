@@ -12,6 +12,8 @@ router.get("/", UserController.getAllUsers);
 router.get("/my-profile/:id", UserController.getMyProfile);
 router.get("/:email", UserController.getAnAccountByEmail);
 
+router.patch("/make-admin/:id", UserController.makeAdmin);
+
 router.patch(
   "/my-profile",
   auth(Role.ADMIN, Role.USER),

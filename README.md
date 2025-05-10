@@ -5,6 +5,7 @@
 ```bash
 git clone https://github.com/SadikRa/assignment-9-server.git
 cd assignment-9-server
+```
 
 📦 2. Install Dependencies
 
@@ -40,10 +41,11 @@ Then, open .env and update your environment variables (like DATABASE_URL).
 ✅ Step 1: Create a New Branch
 
 Always start from the latest main:
-
+```bash
 git checkout main
 git pull origin main
 git checkout -b yourName/feature-name
+```
 
     🔁 Replace:
 
@@ -61,11 +63,12 @@ feat, fix, docs, chore, refactor, etc.
 🔄 Step 3: Sync with Main Before Pushing
 
 Stay up-to-date with main:
-
+```bash
 git checkout main
 git pull origin main
 git checkout yourName/feature-name
 git rebase main
+```
 
 If conflicts appear:
 
@@ -75,7 +78,9 @@ git rebase --continue
 
 ⬆️ Step 4: Push Your Work
 
+```bash
 git push -u origin yourName/feature-name
+```
 
 💡 Git Tips
 
@@ -89,4 +94,3 @@ git push -u origin yourName/feature-name
 
 sadik/add-payment-model
 sadik/fix-review-bug
-```
