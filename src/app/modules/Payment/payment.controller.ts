@@ -4,8 +4,7 @@ import httpStatus from "http-status";
 import { PaymentService } from "./payment.services";
 
 const initPayment = catchAsync(async (req, res) => {
-  const { reviewId } = req.params;
-  const result = await PaymentService.initPayment(reviewId);
+  const result = await PaymentService.initPayment(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
