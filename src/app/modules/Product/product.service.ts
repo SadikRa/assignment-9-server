@@ -45,8 +45,14 @@ const createProduct = async (req: Request) => {
 /////   TO DO pagination and filter add Later
 const getProducts = async () => {
   const result = await prisma.product.findMany({
+    orderBy: {
+      createdAt: "desc", // latest products first
+    },
     include: {
       reviews: {
+        orderBy: {
+          createdAt: "desc", // latest reviews first
+        },
         include: {
           votes: true,
           ReviewComment: true,
@@ -66,6 +72,9 @@ const getAProduct = async (id: string) => {
     },
     include: {
       reviews: {
+        orderBy: {
+          createdAt: "desc", // newest reviews first
+        },
         include: {
           votes: true,
           ReviewComment: true,

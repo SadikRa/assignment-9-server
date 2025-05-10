@@ -1,3 +1,4 @@
+import { reviewValidation } from "./../Review/review.validation";
 import status from "http-status";
 
 import { Request } from "express";
@@ -55,6 +56,28 @@ const getMyProfile = async (id: string) => {
           isCompleteProfile: true,
         },
       },
+    },
+  });
+  if (!user) {
+    throw new AppError(status.NOT_FOUND, "User not found");
+  }
+
+  return user;
+};
+
+// find by email
+const getAccountByEmail = async (email: string) => {
+  const user = await prisma.account.findUnique({
+    where: {
+      email,
+      isDeleted: false,
+    },
+    include: {
+      user: true,
+      reviews: true,
+      votes: true,
+      ReviewComment: true,
+      Payment: true,
     },
   });
   if (!user) {
@@ -181,4 +204,5 @@ export const userService = {
   makeAdmin,
   updateMyProfile,
   deleteMyProfile,
+  getAccountByEmail,
 };
