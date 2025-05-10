@@ -24,6 +24,17 @@ const getMyProfile = catchAsync(async (req, res) => {
   });
 });
 
+const makeAdmin = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await userService.makeAdmin(id);
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "User role updated to ADMIN successfully",
+    data: result,
+  });
+});
+
 const updateMyProfile = catchAsync(async (req, res) => {
   const { email } = req.user;
 
@@ -50,6 +61,7 @@ const deleteMyProfile = catchAsync(async (req, res) => {
 export const UserController = {
   getAllUsers,
   getMyProfile,
+  makeAdmin,
   updateMyProfile,
   deleteMyProfile,
 };
