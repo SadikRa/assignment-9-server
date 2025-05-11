@@ -3,6 +3,18 @@ import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { PaymentService } from "./payment.services";
 
+// get Payment
+const getPayment = catchAsync(async (req, res) => {
+  const result = await PaymentService.getPayments();
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Payment Info get successfully",
+    data: result,
+  });
+});
+
 const initPayment = catchAsync(async (req, res) => {
   const result = await PaymentService.initPayment(req.body);
   sendResponse(res, {
@@ -24,6 +36,7 @@ const validatePayment = catchAsync(async (req, res) => {
 });
 
 export const PaymentController = {
+  getPayment,
   initPayment,
   validatePayment,
 };

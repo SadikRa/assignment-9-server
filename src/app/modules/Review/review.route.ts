@@ -44,7 +44,7 @@ router.delete(
 // init-payment
 router.post(
   "/:id/init-payment",
-  auth(Role.USER),
+  auth(Role.USER, Role.ADMIN, Role.COMPANY),
   reviewController.initPremiumPayment
 );
 
