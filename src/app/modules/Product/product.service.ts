@@ -20,8 +20,8 @@ const createProduct = async (req: Request) => {
     const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
     req.body.imageUrl = uploadToCloudinary?.secure_url;
   }
-
   const { name, price, description, category } = req.body;
+  const imageUrl = req.file?.path;
 
   const result = await prisma.product.create({
     data: {
@@ -29,6 +29,7 @@ const createProduct = async (req: Request) => {
       price: parseFloat(price),
       description,
       category,
+      imageUrl,
     },
   });
 

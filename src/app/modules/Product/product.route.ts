@@ -4,7 +4,8 @@ import { ProductController } from "./product.controller";
 import { productValidation } from "./product.validation";
 import validateRequest from "../../middlewares/validateRequest";
 import { Role } from "@prisma/client";
-import { fileUploader } from "../../../helpers/fileUploader";
+import { multerUpload } from "../../../config/multer.config";
+
 
 const router = Router();
 
@@ -12,7 +13,7 @@ const router = Router();
 router.post(
   "/create-product",
   auth(Role.COMPANY, Role.ADMIN, Role.USER),
-  fileUploader.upload.single("image"),
+  multerUpload.single("image"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = productValidation.createProduct.parse(JSON.parse(req.body.data));
     ProductController.createProduct(req, res, next);
