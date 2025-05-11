@@ -2,8 +2,9 @@ import httpStatus from "http-status";
 import { Request } from "express";
 import prisma from "../../../shared/prisma";
 import AppError from "../../errors/AppError";
-import uploadCloud from "../../../shared/cloudinary";
 import { Product } from "@prisma/client";
+import { fileUploader } from "../../../helpers/fileUploader";
+import { IFile } from "../../interfaces/file";
 
 /// create product
 const createProduct = async (req: Request) => {
@@ -13,6 +14,12 @@ const createProduct = async (req: Request) => {
     where: { email },
   });
 
+  const file = req.file as IFile;
+
+  if (req.file) {
+    const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
+    req.body.imageUrl = uploadToCloudinary?.secure_url;
+  }
   const { name, price, description, category } = req.body;
   const imageUrl = req.file?.path;
 

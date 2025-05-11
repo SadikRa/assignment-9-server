@@ -20,6 +20,7 @@ const initPayment = async (paymentData: any) => {
   };
 
   const result = await SSLService.initPayment(data);
+  console.log(result);
   return result;
 };
 

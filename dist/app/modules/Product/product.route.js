@@ -6,14 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.productRouters = void 0;
 const express_1 = require("express");
 const auth_1 = __importDefault(require("../../middlewares/auth"));
-const fileUploader_1 = __importDefault(require("../../../helpers/fileUploader"));
 const product_controller_1 = require("./product.controller");
 const product_validation_1 = require("./product.validation");
 const validateRequest_1 = __importDefault(require("../../middlewares/validateRequest"));
 const client_1 = require("@prisma/client");
+const fileUploader_1 = require("../../../helpers/fileUploader");
 const router = (0, express_1.Router)();
 /// create product
-router.post("/create-product", (0, auth_1.default)(client_1.Role.COMPANY, client_1.Role.ADMIN, client_1.Role.USER), fileUploader_1.default.single("image"), (req, res, next) => {
+router.post("/create-product", (0, auth_1.default)(client_1.Role.COMPANY, client_1.Role.ADMIN, client_1.Role.USER), fileUploader_1.fileUploader.upload.single("image"), (req, res, next) => {
     req.body = product_validation_1.productValidation.createProduct.parse(JSON.parse(req.body.data));
     product_controller_1.ProductController.createProduct(req, res, next);
 });

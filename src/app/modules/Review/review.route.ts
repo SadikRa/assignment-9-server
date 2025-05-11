@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import auth from "../../middlewares/auth";
-import fileUploader from "../../../helpers/fileUploader";
 import validateRequest from "../../middlewares/validateRequest";
 import { Role } from "@prisma/client";
 import { reviewController } from "./review.controller";
 import { reviewValidation } from "./review.validation";
+import { fileUploader } from "../../../helpers/fileUploader";
 
 const router = Router();
 
@@ -12,7 +12,7 @@ const router = Router();
 router.post(
   "/create-review",
   auth(Role.USER, Role.COMPANY, Role.ADMIN),
-  // fileUploader.single("image"),
+  fileUploader.upload.single("image"),
   validateRequest(reviewValidation.createReviewSchema),
   reviewController.createReview
 );

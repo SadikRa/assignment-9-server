@@ -20,7 +20,7 @@ const initPayment = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Payment initiate successfully",
+    message: "Payment initialization successful",
     data: result,
   });
 });
