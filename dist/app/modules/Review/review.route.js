@@ -10,11 +10,10 @@ const validateRequest_1 = __importDefault(require("../../middlewares/validateReq
 const client_1 = require("@prisma/client");
 const review_controller_1 = require("./review.controller");
 const review_validation_1 = require("./review.validation");
+const fileUploader_1 = require("../../../helpers/fileUploader");
 const router = (0, express_1.Router)();
 /// create review
-router.post("/create-review", (0, auth_1.default)(client_1.Role.USER, client_1.Role.COMPANY, client_1.Role.ADMIN), 
-// fileUploader.single("image"),
-(0, validateRequest_1.default)(review_validation_1.reviewValidation.createReviewSchema), review_controller_1.reviewController.createReview);
+router.post("/create-review", (0, auth_1.default)(client_1.Role.USER, client_1.Role.COMPANY, client_1.Role.ADMIN), fileUploader_1.fileUploader.upload.single("image"), (0, validateRequest_1.default)(review_validation_1.reviewValidation.createReviewSchema), review_controller_1.reviewController.createReview);
 // get all review
 router.get("/", review_controller_1.reviewController.getReview);
 // get single review

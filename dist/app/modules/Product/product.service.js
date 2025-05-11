@@ -16,16 +16,17 @@ exports.ProductService = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
-const cloudinary_1 = __importDefault(require("../../../shared/cloudinary"));
+const fileUploader_1 = require("../../../helpers/fileUploader");
 /// create product
 const createProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.user;
     yield prisma_1.default.account.findUniqueOrThrow({
         where: { email },
     });
+    const file = req.file;
     if (req.file) {
-        const uploadedImage = yield (0, cloudinary_1.default)(req.file);
-        req.body.imageUrl = uploadedImage === null || uploadedImage === void 0 ? void 0 : uploadedImage.secure_url;
+        const uploadToCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
+        req.body.imageUrl = uploadToCloudinary === null || uploadToCloudinary === void 0 ? void 0 : uploadToCloudinary.secure_url;
     }
     const { name, price, description, category } = req.body;
     const result = yield prisma_1.default.product.create({

@@ -7,7 +7,6 @@ import validateRequest from "../../middlewares/validateRequest";
 
 const router = Router();
 
-
 router.post(
   "/create-vote",
   auth(Role.USER, Role.ADMIN),

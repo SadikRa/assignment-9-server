@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import auth from "../../middlewares/auth";
-import fileUploader from "../../../helpers/fileUploader";
 import { ProductController } from "./product.controller";
 import { productValidation } from "./product.validation";
 import validateRequest from "../../middlewares/validateRequest";
 import { Role } from "@prisma/client";
 import { multerUpload } from "../../../config/multer.config";
+
 
 const router = Router();
 
