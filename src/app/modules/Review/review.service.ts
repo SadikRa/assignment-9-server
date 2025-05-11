@@ -121,13 +121,12 @@ const deleteAReview = async (id: string) => {
   });
   return result;
 };
+
 // init Premium Payment
-const initPremiumPayment = async (reviewId: string, user: any) => {
+const initPremiumPayment = async (reviewId: string, payLoad: any) => {
   const review = await prisma.review.findUnique({
     where: {
       id: reviewId,
-      isPremium: true,
-      status: "APPROVED",
     },
     include: {
       account: {
@@ -152,28 +151,32 @@ const initPremiumPayment = async (reviewId: string, user: any) => {
     throw new AppError(httpStatus.BAD_REQUEST, "Invalid premium price");
   }
 
-  const today = new Date();
-  const transactionId = `REV-${today.getFullYear()}${today.getMonth()}${today.getDate()}-${today.getHours()}${today.getMinutes()}${today.getSeconds()}`;
+  // Begin transaction
+  const [updatedReview, payment] = await prisma.$transaction([
+    prisma.review.update({
+      where: { id: reviewId },
+      data: { isPremium: true },
+    }),
 
-  // Create payment record
-  const payment = await prisma.payment.create({
-    data: {
-      amount: review.premiumPrice,
-      status: PaymentStatus.PENDING,
-      accountId: review.accountId,
-      reviewId: review.id,
-      currency: "BDT",
-    },
-  });
+    prisma.payment.create({
+      data: {
+        amount: review.premiumPrice,
+        status: PaymentStatus.PENDING,
+        accountId: review.accountId,
+        reviewId: review.id,
+        currency: "BDT",
+      },
+    }),
+  ]);
 
   // Prepare SSLCommerz payload
   const paymentData = {
     amount: review.premiumPrice,
     transactionId: payment.id,
-    name: null,
+    name: payLoad?.name,
     email: review.account.email,
-    address: null,
-    phoneNumber: null,
+    address: payLoad.address,
+    phoneNumber: payLoad.number,
   };
 
   // Initiate payment

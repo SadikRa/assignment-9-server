@@ -2,6 +2,12 @@ import prisma from "../../../shared/prisma";
 import { SSLService } from "../SSL/ssl.service";
 import { PaymentStatus } from "@prisma/client";
 
+/// get review
+const getPayments = async () => {
+  const result = await prisma.payment.findMany();
+  return result;
+};
+
 const initPayment = async (paymentData: any) => {
   // Prepare SSLCommerz payload
   const data = {
@@ -39,6 +45,7 @@ const validatePayment = async (payload: any) => {
 };
 
 export const PaymentService = {
+  getPayments,
   initPayment,
   validatePayment,
 };
