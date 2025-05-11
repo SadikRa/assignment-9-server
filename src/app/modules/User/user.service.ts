@@ -5,6 +5,7 @@ import { Request } from "express";
 import prisma from "../../../shared/prisma";
 import AppError from "../../errors/AppError";
 import uploadCloud from "../../../shared/cloudinary";
+import { Role } from "@prisma/client";
 
 // get all users
 const getAllUsers = async () => {
@@ -84,6 +85,34 @@ const getAccountByEmail = async (email: string) => {
   }
 
   return user;
+};
+
+//make Admin
+const makeAdmin = async (id: string) => {
+  const user = await prisma.account.findUnique({
+    where: {
+      id: id,
+      isDeleted: false,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(status.NOT_FOUND, "User not found");
+  }
+
+  const updatedAccount = await prisma.account.update({
+    where: {
+      id: id,
+    },
+    data: {
+      role: Role.ADMIN,
+    },
+  });
+
+  return {
+    userId: user.id,
+    newRole: updatedAccount.role,
+  };
 };
 
 // update user
@@ -172,6 +201,7 @@ const deleteMyProfile = async (email: string) => {
 export const userService = {
   getAllUsers,
   getMyProfile,
+  makeAdmin,
   updateMyProfile,
   deleteMyProfile,
   getAccountByEmail,
