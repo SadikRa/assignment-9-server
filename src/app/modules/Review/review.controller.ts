@@ -69,9 +69,9 @@ const deleteAReview = catchAsync(async (req, res) => {
 // init Premium Payment
 const initPremiumPayment = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const user = req.user;
+  const payLoad = req.body;
 
-  const result = await reviewService.initPremiumPayment(id, user);
+  const result = await reviewService.initPremiumPayment(id, payLoad);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
