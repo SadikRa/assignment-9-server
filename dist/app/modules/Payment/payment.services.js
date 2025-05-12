@@ -18,7 +18,12 @@ const ssl_service_1 = require("../SSL/ssl.service");
 const client_1 = require("@prisma/client");
 /// get review
 const getPayments = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.payment.findMany();
+    const result = yield prisma_1.default.payment.findMany({
+        include: {
+            account: true,
+            review: true,
+        },
+    });
     return result;
 });
 const initPayment = (paymentData) => __awaiter(void 0, void 0, void 0, function* () {

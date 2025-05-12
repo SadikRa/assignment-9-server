@@ -23,11 +23,6 @@ const createProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.account.findUniqueOrThrow({
         where: { email },
     });
-    // const file = req.file as IFile;
-    // if (req.file) {
-    //   const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
-    //   req.body.imageUrl = uploadToCloudinary?.secure_url;
-    // }
     const { name, price, description, category } = req.body;
     const imageUrl = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
     const result = yield prisma_1.default.product.create({
@@ -49,6 +44,10 @@ const getProducts = () => __awaiter(void 0, void 0, void 0, function* () {
         },
         include: {
             reviews: {
+                where: {
+                    isDeleted: false,
+                    status: "APPROVED",
+                },
                 orderBy: {
                     createdAt: "desc", // latest reviews first
                 },
@@ -70,6 +69,10 @@ const getAProduct = (id) => __awaiter(void 0, void 0, void 0, function* () {
         },
         include: {
             reviews: {
+                where: {
+                    isDeleted: false,
+                    status: "APPROVED",
+                },
                 orderBy: {
                     createdAt: "desc", // newest reviews first
                 },
