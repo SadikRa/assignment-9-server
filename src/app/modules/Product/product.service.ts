@@ -14,12 +14,6 @@ const createProduct = async (req: Request) => {
     where: { email },
   });
 
-  const file = req.file as IFile;
-
-  if (req.file) {
-    const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
-    req.body.imageUrl = uploadToCloudinary?.secure_url;
-  }
   const { name, price, description, category } = req.body;
   const imageUrl = req.file?.path;
 
@@ -44,6 +38,10 @@ const getProducts = async () => {
     },
     include: {
       reviews: {
+        where: {
+          isDeleted: false,
+          status: "APPROVED",
+        },
         orderBy: {
           createdAt: "desc", // latest reviews first
         },
@@ -66,6 +64,10 @@ const getAProduct = async (id: string) => {
     },
     include: {
       reviews: {
+        where: {
+          isDeleted: false,
+          status: "APPROVED",
+        },
         orderBy: {
           createdAt: "desc", // newest reviews first
         },
