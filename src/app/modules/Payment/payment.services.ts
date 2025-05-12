@@ -4,7 +4,12 @@ import { PaymentStatus } from "@prisma/client";
 
 /// get review
 const getPayments = async () => {
-  const result = await prisma.payment.findMany();
+  const result = await prisma.payment.findMany({
+    include: {
+      account: true,
+      review: true,
+    },
+  });
   return result;
 };
 
