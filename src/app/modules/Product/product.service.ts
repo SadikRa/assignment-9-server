@@ -38,6 +38,10 @@ const getProducts = async () => {
     },
     include: {
       reviews: {
+        where: {
+          isDeleted: false,
+          status: "APPROVED",
+        },
         orderBy: {
           createdAt: "desc", // latest reviews first
         },
@@ -60,6 +64,10 @@ const getAProduct = async (id: string) => {
     },
     include: {
       reviews: {
+        where: {
+          isDeleted: false,
+          status: "APPROVED",
+        },
         orderBy: {
           createdAt: "desc", // newest reviews first
         },
