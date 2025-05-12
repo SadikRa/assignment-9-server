@@ -115,12 +115,10 @@ const deleteAReview = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 // init Premium Payment
-const initPremiumPayment = (reviewId, user) => __awaiter(void 0, void 0, void 0, function* () {
+const initPremiumPayment = (reviewId, payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     const review = yield prisma_1.default.review.findUnique({
         where: {
             id: reviewId,
-            isPremium: true,
-            status: "APPROVED",
         },
         include: {
             account: {
@@ -142,26 +140,30 @@ const initPremiumPayment = (reviewId, user) => __awaiter(void 0, void 0, void 0,
     if (!review.premiumPrice || review.premiumPrice <= 0) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, "Invalid premium price");
     }
-    const today = new Date();
-    const transactionId = `REV-${today.getFullYear()}${today.getMonth()}${today.getDate()}-${today.getHours()}${today.getMinutes()}${today.getSeconds()}`;
-    // Create payment record
-    const payment = yield prisma_1.default.payment.create({
-        data: {
-            amount: review.premiumPrice,
-            status: client_1.PaymentStatus.PENDING,
-            accountId: review.accountId,
-            reviewId: review.id,
-            currency: "BDT",
-        },
-    });
+    // Begin transaction
+    const [updatedReview, payment] = yield prisma_1.default.$transaction([
+        prisma_1.default.review.update({
+            where: { id: reviewId },
+            data: { isPremium: true },
+        }),
+        prisma_1.default.payment.create({
+            data: {
+                amount: review.premiumPrice,
+                status: client_1.PaymentStatus.PENDING,
+                accountId: review.accountId,
+                reviewId: review.id,
+                currency: "BDT",
+            },
+        }),
+    ]);
     // Prepare SSLCommerz payload
     const paymentData = {
         amount: review.premiumPrice,
         transactionId: payment.id,
-        name: null,
+        name: payLoad === null || payLoad === void 0 ? void 0 : payLoad.name,
         email: review.account.email,
-        address: null,
-        phoneNumber: null,
+        address: payLoad.address,
+        phoneNumber: payLoad.number,
     };
     // Initiate payment
     const result = yield ssl_service_1.SSLService.initPayment(paymentData);

@@ -16,6 +16,11 @@ exports.PaymentService = void 0;
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const ssl_service_1 = require("../SSL/ssl.service");
 const client_1 = require("@prisma/client");
+/// get review
+const getPayments = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.payment.findMany();
+    return result;
+});
 const initPayment = (paymentData) => __awaiter(void 0, void 0, void 0, function* () {
     // Prepare SSLCommerz payload
     const data = {
@@ -27,6 +32,7 @@ const initPayment = (paymentData) => __awaiter(void 0, void 0, void 0, function*
         phoneNumber: paymentData.phoneNumber,
     };
     const result = yield ssl_service_1.SSLService.initPayment(data);
+    console.log(result);
     return result;
 });
 const validatePayment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -47,6 +53,7 @@ const validatePayment = (payload) => __awaiter(void 0, void 0, void 0, function*
     };
 });
 exports.PaymentService = {
+    getPayments,
     initPayment,
     validatePayment,
 };

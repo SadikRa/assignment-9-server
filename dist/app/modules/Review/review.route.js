@@ -22,7 +22,7 @@ router.get("/:id", (0, auth_1.default)(client_1.Role.USER, client_1.Role.COMPANY
 router.patch("/update-review/:id", (0, auth_1.default)(client_1.Role.COMPANY, client_1.Role.ADMIN), (0, validateRequest_1.default)(review_validation_1.reviewValidation.updateReviewSchema), review_controller_1.reviewController.updateAReview);
 router.delete("/delete-review/:id", (0, auth_1.default)(client_1.Role.COMPANY, client_1.Role.ADMIN), review_controller_1.reviewController.deleteAReview);
 // init-payment
-router.post("/:id/init-payment", (0, auth_1.default)(client_1.Role.USER), review_controller_1.reviewController.initPremiumPayment);
+router.post("/:id/init-payment", (0, auth_1.default)(client_1.Role.USER, client_1.Role.ADMIN, client_1.Role.COMPANY), review_controller_1.reviewController.initPremiumPayment);
 // validate payment
 router.post("/validate-payment", review_controller_1.reviewController.validatePremiumPayment);
 exports.reviewRouters = router;

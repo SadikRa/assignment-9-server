@@ -17,12 +17,22 @@ const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
 const payment_services_1 = require("./payment.services");
+// get Payment
+const getPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield payment_services_1.PaymentService.getPayments();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.CREATED,
+        success: true,
+        message: "Payment Info get successfully",
+        data: result,
+    });
+}));
 const initPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield payment_services_1.PaymentService.initPayment(req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: "Payment initiate successfully",
+        message: "Payment initialization successful",
         data: result,
     });
 }));
@@ -36,6 +46,7 @@ const validatePayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
     });
 }));
 exports.PaymentController = {
+    getPayment,
     initPayment,
     validatePayment,
 };

@@ -6,7 +6,6 @@ import validateRequest from "../../middlewares/validateRequest";
 import { Role } from "@prisma/client";
 import { multerUpload } from "../../../config/multer.config";
 
-
 const router = Router();
 
 /// create product
