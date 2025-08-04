@@ -16,3 +16,4 @@ const verifyToken = (token: string, secret: Secret) => {
 };
 
 export const jwtHelpers = { generateToken, verifyToken };
+
